@@ -1,0 +1,29 @@
+@import "globals.css";
+
+.Nav {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F0F0F0;
+}
+
+.Nav>a {
+    color: inherit;
+    font-weight: 700;
+}
+
+.Nav>div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.Nav>div>a {
+    color: #646464;
+    font-weight: 500;
+}
+
+.Nav>div>a:hover {
+    color: #202020;
+}

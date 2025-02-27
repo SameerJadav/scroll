@@ -2,7 +2,7 @@
     "type": "module",
     "main": "./src/index.js",
     "scripts": {
-        "dev": "node --env-file=.env --watch-path=./src ./src/index.js"
+        "dev": "node --env-file=.env --watch-path=./src --watch-preserve-output ./src/index.js"
     },
     "devDependencies": {
         "@types/node": "^22.13.5"
