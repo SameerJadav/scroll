@@ -1,0 +1,59 @@
+@import "globals.css";
+@import "nav.css";
+
+.Signup {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 50%;
+}
+
+.Signup>form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+}
+
+
+.Signup>form>label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.Signup>form>label>input {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #CECECE;
+}
+
+.Signup>form>label>input:hover {
+    border: 2px solid #BBBBBB;
+}
+
+.Signup>form>label>input:focus {
+    outline: none;
+    border: 2px solid #202020;
+}
+
+.Signup>form>label>input:user-valid {
+    border: 2px solid #30A46C;
+}
+
+.Signup>form>label>input:user-invalid {
+    border: 2px solid #E5484D;
+}
+
+.Signup>form>p {
+    color: #646464;
+    font-size: 0.875rem;
+}
+
+.Signup>form>button {
+    background-color: #FFD19A;
+    color: inherit;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+}

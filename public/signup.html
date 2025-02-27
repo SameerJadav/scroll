@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll</title>
+    <link rel="stylesheet" href="/styles/signup.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="Nav">
+        <a href="/">Scroll</a>
+        <div>
+          <a href="/signup">Signup</a>
+          <a href="/login">Login</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="Signup">
+        <form id="signup_form">
+          <label for="email">Email
+            <input required id="email" type="email"></input>
+          </label>
+          <label for="password">Password
+            <input
+              required
+              id="password"
+              name="password"
+              type="password"
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W])[^\s]{8,16}"
+              minlength="8"
+              maxlength="16"></input>
+          </label>
+          <label for="confirm_password">Confirm Password
+            <input
+              required
+              id="confirm_password"
+              name="confirm_password"
+              type="password"
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W])[^\s]{8,16}"
+              minlength="8"
+              maxlength="16"></input>
+          </label>
+          <p>Password: 8-16 chars, 1 uppercase, 1 lowercase, 1 special char, no spaces.</p>
+          <button type="submit">Signup</button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
