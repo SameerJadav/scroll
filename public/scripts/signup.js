@@ -45,15 +45,11 @@ function main() {
       return;
     }
 
-    const data = { email: email.value, password: password.value };
-
     fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ email: email.value, password: password.value }),
     });
-
-    console.log(data);
   });
 }
 
