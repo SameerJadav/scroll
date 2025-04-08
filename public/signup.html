@@ -20,7 +20,7 @@
       <div class="Signup">
         <form id="signup_form">
           <label for="email">Email
-            <input required id="email" type="email"></input>
+            <input required id="email" type="email" autocomplete="username"></input>
           </label>
           <label for="password">Password
             <input
@@ -30,17 +30,19 @@
               type="password"
               pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W])[^\s]{8,16}"
               minlength="8"
-              maxlength="16"></input>
+              maxlength="16" 
+              autocomplete="new-password"></input>
           </label>
-          <label for="confirm_password">Confirm Password
+          <label for="confirm-password">Confirm Password
             <input
               required
-              id="confirm_password"
-              name="confirm_password"
+              id="confirm-password"
+              name="confirm-password"
               type="password"
               pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W])[^\s]{8,16}"
               minlength="8"
-              maxlength="16"></input>
+              maxlength="16"
+              autocomplete="new-password"></input>
           </label>
           <p>Password: 8-16 chars, 1 uppercase, 1 lowercase, 1 special char, no spaces.</p>
           <button type="submit">Signup</button>

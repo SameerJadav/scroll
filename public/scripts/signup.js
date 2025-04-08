@@ -9,12 +9,12 @@ function main() {
     return;
   }
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
-    const confirmPassword = document.getElementById("confirm_password");
+    const confirmPassword = document.getElementById("confirm-password");
 
     if (!password) {
       console.error("password feild not found");
@@ -32,7 +32,7 @@ function main() {
       return;
     } else if (!(confirmPassword instanceof HTMLInputElement)) {
       console.error(
-        "element with id 'confirm_password' is not an input element",
+        "element with id 'confirm-password' is not an input element",
       );
       return;
     } else if (!(email instanceof HTMLInputElement)) {
@@ -45,11 +45,15 @@ function main() {
       return;
     }
 
-    fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.value, password: password.value }),
-    });
+    try {
+      await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.value, password: password.value }),
+      });
+    } catch (error) {
+      console.error("failed to fetch:", error);
+    }
   });
 }
 

@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from "node:http";
 
 /**
  * @typedef RequestExtras
- * @property {object} [body]
+ * @property {*} [body]
  */
 
 /**
