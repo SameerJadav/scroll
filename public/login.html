@@ -20,7 +20,7 @@
       <div class="Login">
         <form>
           <label for="email">Email
-            <input required id="email" name="email" type="email"></input>
+            <input required id="email" type="email" autocomplete="username"></input>
           </label>
           <label for="password">Password
             <input
@@ -30,7 +30,8 @@
               type="password"
               pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W])[^\s]{8,16}"
               minlength="8"
-              maxlength="16"></input>
+              maxlength="16"
+              autocomplete="current-password"></input>
           </label>
           <p>Password: 8-16 chars, 1 uppercase, 1 lowercase, 1 special char, no spaces.</p>
           <button>Login</button>

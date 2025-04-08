@@ -11,7 +11,7 @@ import { log } from "./utils.js";
 /** @type {MiddlewareFunction} */
 export function logger(req, res, next) {
   res.on("finish", () => {
-    const msg = `——— ${req.method} ${req.url} ${res.statusCode}`;
+    const msg = `${req.method} ${req.url} ${res.statusCode}`;
     log("INFO", msg);
   });
 
@@ -20,7 +20,7 @@ export function logger(req, res, next) {
 }
 
 /** @type {MiddlewareFunction} */
-export function json(req, res, next) {
+export function bodyParser(req, res, next) {
   if (req.method !== "POST") {
     next();
     return;
@@ -47,7 +47,12 @@ export function json(req, res, next) {
       req.body = JSON.parse(Buffer.concat(chunks).toString());
     } catch (error) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "invalid json" }));
+      res.end(
+        JSON.stringify({
+          error: "Bad request",
+          message: `Invalid JSON: ${error}`,
+        }),
+      );
       return;
     }
 
