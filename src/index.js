@@ -1,9 +1,8 @@
 import http from "node:http";
 import path from "node:path";
-import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
-import { getStaticRoutes, log } from "./utils.js";
+import { getStaticRoutes, generateHash, log, generateSalt } from "./utils.js";
 import { compose, bodyParser, logger } from "./middleware.js";
 
 const DATABASE_NAME = "scroll.db";
@@ -19,11 +18,6 @@ database.exec(`CREATE TABLE IF NOT EXISTS users (
 );
 `);
 database.close();
-
-const SALT_BYTES = 16;
-const ITERATIONS = 10000;
-const KEYLEN = 512;
-const DIGEST = "sha512";
 
 const publicDir = path.join(process.cwd(), "public");
 const staticRoutes = await getStaticRoutes(publicDir, publicDir);
@@ -114,11 +108,9 @@ async function handler(req, res) {
       return;
     }
 
-    const salt = crypto.randomBytes(SALT_BYTES).toString("hex");
+    const salt = generateSalt();
 
-    const hash = crypto
-      .pbkdf2Sync(body.password, salt, ITERATIONS, KEYLEN, DIGEST)
-      .toString("hex");
+    const hash = generateHash(body.password, salt);
 
     const insert = database.prepare(
       "INSERT INTO users (email, password_hash, salt) VALUES (?, ?, ?)",
@@ -131,7 +123,6 @@ async function handler(req, res) {
     res.writeHead(201, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        error: "Created",
         message: "User created successfully",
       }),
     );
@@ -140,6 +131,84 @@ async function handler(req, res) {
   }
 
   if (req.url === "/api/auth/login") {
+    if (!req.body) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Bad Request",
+          message: "Request body missing.",
+        }),
+      );
+      return;
+    }
+
+    /** @type {{email:any, password:any}} */
+    const body = req.body;
+
+    if (!body.email || !body.password) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Bad Request",
+          message: "Email and password are required.",
+        }),
+      );
+      return;
+    }
+
+    if (typeof body.email !== "string" || typeof body.password !== "string") {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Bad Request",
+          message: "Email and password must be string.",
+        }),
+      );
+      return;
+    }
+
+    const database = new DatabaseSync(DATABASE_NAME);
+
+    const query = database.prepare(
+      "SELECT email, password_hash, salt FROM users WHERE email = ?",
+    );
+
+    const user = query.get(body.email);
+
+    database.close();
+
+    if (!user) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Unauthorized",
+          message: "Failed to find user.",
+        }),
+      );
+      return;
+    }
+
+    const hash = generateHash(body.password, user.salt);
+
+    if (hash !== user.password_hash) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "Unauthorized",
+          message: "Invalid password.",
+        }),
+      );
+      return;
+    }
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: "User logged in",
+      }),
+    );
+
+    return;
   }
 }
 

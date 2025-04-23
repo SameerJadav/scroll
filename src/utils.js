@@ -1,5 +1,10 @@
 import path from "node:path";
+import crypto from "node:crypto";
 import fs from "node:fs/promises";
+
+const ITERATIONS = 10000;
+const KEYLEN = 512;
+const DIGEST = "sha512";
 
 /**
  * @param {"INFO" | "WARN" | "ERROR"} level
@@ -13,6 +18,22 @@ export function log(level, msg) {
   console.log(`${date} ${time} ${level} ——— ${msg}`);
 }
 
+/** @param {string} salt
+ * @param {string} password
+ */
+export function generateHash(password, salt) {
+  return crypto
+    .pbkdf2Sync(password, salt, ITERATIONS, KEYLEN, DIGEST)
+    .toString("hex");
+}
+
+/** @param {number} [size]  */
+export function generateSalt(size) {
+  if (!size) {
+    size = 16;
+  }
+  return crypto.randomBytes(size).toString("hex");
+}
 /**
  * @typedef {Object} RouteInfo
  * @property {string} filePath
