@@ -2,8 +2,8 @@
     "type": "module",
     "main": "./src/index.js",
     "scripts": {
-        "dev": "node --env-file=.env --watch-path=./src --watch-path=./public --watch-preserve-output ./src/index.js",
-        "start": "node --env-file=.env ./src/index.js"
+        "dev": "node --env-file=.env --watch-path=./src --watch-path=./public --watch-preserve-output ./src/server.js",
+        "start": "node --env-file=.env ./src/server.js"
     },
     "devDependencies": {
         "@types/node": "^22.13.5"
