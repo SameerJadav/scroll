@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from "node:http";
 /**
  * @typedef RequestExtras
  * @property {*} [body]
+ * @property {*} [user]
  */
 
 /**

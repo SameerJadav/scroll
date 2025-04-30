@@ -1,4 +1,5 @@
 import { log } from "./utils.js";
+import jwt from "jsonwebtoken";
 
 /**
  * @callback MiddlewareFunction
@@ -20,7 +21,7 @@ export function logger(req, res, next) {
 }
 
 /** @type {MiddlewareFunction} */
-export function bodyParser(req, res, next) {
+export function body(req, res, next) {
   if (req.method !== "POST") {
     next();
     return;
@@ -59,6 +60,67 @@ export function bodyParser(req, res, next) {
     next();
     return;
   });
+}
+
+/** @type {MiddlewareFunction} */
+export function auth(req, res, next) {
+  if (req.url !== "/api/notes") {
+    next();
+    return;
+  }
+
+  const cookie = req.headers.cookie;
+  if (!cookie) {
+    res.writeHead(401, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "Unauthorised",
+        message: "Missing cookie.",
+      }),
+    );
+    return;
+  }
+
+  const [name, token] = cookie?.split("=");
+
+  if (name !== "token" || !token) {
+    res.writeHead(401, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "Unauthorised",
+        message: "Missing token.",
+      }),
+    );
+    return;
+  }
+
+  const secret = process.env["JWT_SECRET"];
+  if (!secret) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "Internal Server Error",
+        message: "Failed to get JWT_SECRET.",
+      }),
+    );
+    return;
+  }
+
+  try {
+    req.user = jwt.verify(token, secret);
+  } catch (error) {
+    res.writeHead(401, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "Unauthorised",
+        message: "Failed to verify token.",
+      }),
+    );
+    return;
+  }
+
+  next();
+  return;
 }
 
 /**

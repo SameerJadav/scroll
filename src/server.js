@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
 import jwt from "jsonwebtoken";
 import { getStaticRoutes, generateHash, log, generateSalt } from "./utils.js";
-import { compose, bodyParser, logger } from "./middleware.js";
+import { compose, body, logger, auth } from "./middleware.js";
 
 const DATABASE_NAME = "scroll.db";
 const JWT_EXPIRES_IN = 60 * 60;
@@ -268,57 +268,18 @@ async function handler(req, res) {
 
   if (req.url === "/api/notes") {
     if (req.method === "GET") {
-      const cookie = req.headers.cookie;
-      if (!cookie) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Unauthorised",
-            message: "Missing cookie.",
-          }),
-        );
-        return;
-      }
-
-      const [name, token] = cookie?.split("=");
-
-      if (name !== "token" || !token) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Unauthorised",
-            message: "Missing token.",
-          }),
-        );
-        return;
-      }
-
-      const secret = process.env["JWT_SECRET"];
-      if (!secret) {
+      if (!req.user) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(
           JSON.stringify({
             error: "Internal Server Error",
-            message: "Failed to get JWT_SECRET.",
+            message: "Failed to get user from req object.",
           }),
         );
         return;
       }
 
-      let payload;
-
-      try {
-        payload = jwt.verify(token, secret);
-      } catch (error) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Unauthorised",
-            message: "Failed to verify token.",
-          }),
-        );
-        return;
-      }
+      const payload = req.user;
 
       const database = new DatabaseSync(DATABASE_NAME);
 
@@ -333,57 +294,18 @@ async function handler(req, res) {
 
       return;
     } else if (req.method === "POST") {
-      const cookie = req.headers.cookie;
-      if (!cookie) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Unauthorised",
-            message: "Missing cookie.",
-          }),
-        );
-        return;
-      }
-
-      const [name, token] = cookie?.split("=");
-
-      if (name !== "token" || !token) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Unauthorised",
-            message: "Missing token.",
-          }),
-        );
-        return;
-      }
-
-      const secret = process.env["JWT_SECRET"];
-      if (!secret) {
+      if (!req.user) {
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(
           JSON.stringify({
             error: "Internal Server Error",
-            message: "Failed to get JWT_SECRET.",
+            message: "Failed to get user from req object.",
           }),
         );
         return;
       }
 
-      let payload;
-
-      try {
-        payload = jwt.verify(token, secret);
-      } catch (error) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Unauthorised",
-            message: "Failed to verify token.",
-          }),
-        );
-        return;
-      }
+      const payload = req.user;
 
       if (!req.body) {
         res.writeHead(400, { "Content-Type": "application/json" });
@@ -452,7 +374,7 @@ async function handler(req, res) {
 
 const server = http.createServer();
 
-server.on("request", compose([logger, bodyParser], handler));
+server.on("request", compose([logger, auth, body], handler));
 
 let port = process.env["PORT"] ? parseInt(process.env["PORT"]) : 300;
 
