@@ -32,11 +32,15 @@ function main() {
     }
 
     try {
-      await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.value, password: password.value }),
       });
+
+      if (res.ok) {
+        window.location.assign("/");
+      }
     } catch (error) {
       console.error("failed to fetch:", error);
     }

@@ -7,5 +7,8 @@
     },
     "devDependencies": {
         "@types/node": "^22.13.5"
+    },
+    "dependencies": {
+        "jsonwebtoken": "^9.0.2"
     }
 }

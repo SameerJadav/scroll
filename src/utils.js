@@ -8,7 +8,7 @@ const DIGEST = "sha512";
 
 /**
  * @param {"INFO" | "WARN" | "ERROR"} level
- * @param {string} msg
+ * @param {any} msg
  * @returns {void}
  */
 export function log(level, msg) {
