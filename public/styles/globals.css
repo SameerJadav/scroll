@@ -128,9 +128,7 @@ a {
     text-decoration: none;
 }
 
+
 main {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }

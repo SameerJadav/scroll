@@ -1,2 +1,10 @@
 @import "globals.css";
 @import "nav.css";
+
+main {
+    margin: auto auto;
+}
+
+h1, p {
+    text-align: center;
+}

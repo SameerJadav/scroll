@@ -64,7 +64,7 @@ export function body(req, res, next) {
 
 /** @type {MiddlewareFunction} */
 export function auth(req, res, next) {
-  if (req.url !== "/api/notes") {
+  if (req.url !== "/api/notes" && req.url !== "/api/auth/status") {
     next();
     return;
   }

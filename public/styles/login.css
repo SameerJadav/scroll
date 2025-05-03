@@ -1,6 +1,13 @@
 @import "globals.css";
 @import "nav.css";
 
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .Login {
     display: flex;
     justify-content: center;

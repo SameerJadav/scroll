@@ -266,6 +266,16 @@ async function handler(req, res) {
     return;
   }
 
+  if (req.url === "/api/auth/status") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: "Authorised.",
+      }),
+    );
+    return;
+  }
+
   if (req.url === "/api/notes") {
     if (req.method === "GET") {
       if (!req.user) {
@@ -290,7 +300,7 @@ async function handler(req, res) {
       database.close();
 
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ notes }));
+      res.end(JSON.stringify(notes));
 
       return;
     } else if (req.method === "POST") {
